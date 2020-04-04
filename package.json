@@ -1,0 +1,19 @@
+{
+  "name": "vue-cli-plugin-initialize",
+  "version": "0.0.1",
+  "main": "index.js",
+  "description": "vue-cli项目初始化插件",
+  "keywords": [
+    "vue",
+    "vue-cli",
+    "commitizen"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/RookieHao/vue-cli-plugin-initialize",
+  "scripts": {
+    "commit": "git-cz"
+  },
+  "devDependencies": {
+    "commitizen": "^4.0.3"
+  }
+}
