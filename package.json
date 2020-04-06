@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-initialize",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "main": "index.js",
   "description": "vue-cli项目初始化插件",
   "keywords": [
