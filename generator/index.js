@@ -1,41 +1,46 @@
-const defaultEnv = {addEnv: ['production', 'development', 'test', 'vf']};
-
+const {
+  defaultScriptAlias,
+  gerneEnvConfig
+} = require("../config/command.options");
+const [{ filter: inputFilter }] = require("../prompts");
 module.exports = (api, options, rootOptions) => {
   let originalScripts = api.generator.originalPkg.scripts;
-  let scripts = {...originalScripts, ...resolveEnvScripts(defaultEnv), ...resolveEnvScripts(options)};
-  api.extendPackage({scripts});
+  let scripts = {
+    ...originalScripts,
+    ...resolveScripts(options)
+  };
+  api.extendPackage({ scripts });
 };
 
-function resolveEnvScripts(options = {}) {
+function resolveScripts(options = {}) {
   if (!options.addEnv || !options.addEnv.length) return {};
-  return options.addEnv.reduce((r, n) => {
-    let scriptName = charEnvKey(n);
-    let command = charEnvValue(n);
-    let script = `vue-cli-service ${command}`;
-    if (scriptName !== 'build') {
-      script += ' && npm run build';
-    }
-    return {...r, [scriptName]: script}
-  }, {})
-}
-
-function charEnvKey(env) {
-  return serialize(env, 'command');
-}
-
-function charEnvValue(env) {
-  return serialize(env, 'script');
-}
-
-function serialize(env, type) {
-  if (type === 'command') {
-    const alias = {
-      development: 'dev',
-      production: ''
-    };
-    let afterFix = alias[env] === undefined ? env : alias[env];
-    return afterFix.trim() ? 'build:' + afterFix.trim() : 'build';
-  } else {
-    return env === 'production' ? 'build' : 'check::env --service ' + env;
+  if (typeof options.addEnv === "string") {
+    options.addEnv = inputFilter(options.addEnv);
   }
+  return options.addEnv.reduce((r, n) => {
+    let envConfig = defaultScriptAlias[n] || gerneEnvConfig(n);
+    let scripts = {};
+    scripts = envConfig.reduce((c, n) => {
+      let commandName = n.commandName;
+      let script = n.scripts
+        .map(
+          ({ command, options }) =>
+            `vue-cli-service ${command}${parseOptions(options)}`
+        )
+        .join(" && ");
+      return { ...c, [commandName]: script };
+    }, scripts);
+    return { ...r, ...scripts };
+  }, {});
+}
+
+function parseOptions(options = {}) {
+  let arrOptions = Object.entries(options);
+  if (!arrOptions.length) return "";
+  return (
+    arrOptions
+      .map(([key, value]) => ` --${key} ${value}`)
+      .join("")
+      .trimEnd() || ""
+  );
 }
