@@ -1,29 +1,18 @@
-module.exports = api => {
-  function clearOriginalEnv() {
-    const prefixRE = /^VUE_APP_/;
-    Object.keys(process.env).forEach(key => {
-      if (prefixRE.test(key)) {
-        delete process.env[key];
-      }
-    });
-  }
+const mergeRootEnv = require("./utils/mergeRootEnv");
+const chainWebpack = require("./utils/chainWebpack");
+const loadEnv = require("./utils/loadEnv");
+module.exports = (api, options) => {
+  const context = api.getCwd();
+  // 1. 合并环境变量文件
+  mergeRootEnv(context);
 
-  function loadEnv(mode) {
-    clearOriginalEnv();
-    api.service.loadEnv(mode);
-  }
+  // 2. 确定mode
+  let mode = require("./utils/resolveMode")(api.service.mode);
 
-  api.registerCommand(
-    "check::env",
-    {
-      description: 'build project for "--service" service with production mode',
-      usage: "vue-cli-service check::env [options]",
-      options: {
-        "--service": "指定生产模式构建项目时使用用的环境变量",
-      },
-    },
-    args => {
-      loadEnv(args.service);
-    }
-  );
+  // 3. 读取环境变量
+  loadEnv(context, undefined); // 公共
+  loadEnv(context, mode); // 环境变量
+
+  // 4. 写入define
+  chainWebpack(api, options);
 };

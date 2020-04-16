@@ -2,28 +2,24 @@ module.exports = {
   gerneEnvConfig(envName) {
     return [
       {
-        commandName: [envName],
+        commandName: envName,
         scripts: [
           {
             command: "serve",
             options: {
-              mode: [envName]
+              service: envName
             }
           }
         ]
       },
       {
-        commandName: `build:${[envName]}`,
+        commandName: `build:${envName}`,
         scripts: [
           {
-            command: "check::env",
-            options: {
-              service: [envName]
-            }
-          },
-          {
             command: "build",
-            options: {}
+            options: {
+              service: envName
+            }
           }
         ]
       }
@@ -44,14 +40,10 @@ module.exports = {
         commandName: "build:dev",
         scripts: [
           {
-            command: "check::env",
+            command: "build",
             options: {
               service: "development"
             }
-          },
-          {
-            command: "build",
-            options: {}
           }
         ]
       }
@@ -74,7 +66,7 @@ module.exports = {
           {
             command: "serve",
             options: {
-              mode: "test"
+              service: "test"
             }
           }
         ]
@@ -83,14 +75,10 @@ module.exports = {
         commandName: "build:test",
         scripts: [
           {
-            command: "check::env",
+            command: "build",
             options: {
               service: "test"
             }
-          },
-          {
-            command: "build",
-            options: {}
           }
         ]
       }
@@ -102,7 +90,7 @@ module.exports = {
           {
             command: "serve",
             options: {
-              mode: "vf"
+              service: "vf"
             }
           }
         ]
@@ -111,14 +99,10 @@ module.exports = {
         commandName: "build:vf",
         scripts: [
           {
-            command: "check::env",
+            command: "build",
             options: {
               service: "vf"
             }
-          },
-          {
-            command: "build",
-            options: {}
           }
         ]
       }

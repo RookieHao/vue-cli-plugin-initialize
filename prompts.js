@@ -1,5 +1,14 @@
 module.exports = [
   {
+    name: "enable",
+    type: "confirm",
+    message: "开启多环境以生产模式打包",
+    default: false
+  },
+  {
+    when({ enable }) {
+      return enable;
+    },
     name: "addEnv",
     message: '设置项目环境,多个环境以(,)分隔。例: "production,development"',
     default: "production,development,test,vf",
@@ -16,5 +25,11 @@ module.exports = [
         );
       return [...defaultInput, ...filterInput];
     }
+  },
+  {
+    name: "addAxios",
+    message: "Use axios for http request?",
+    type: "confirm",
+    default: false
   }
 ];
