@@ -30,6 +30,15 @@ module.exports = [
     name: "addAxios",
     message: "Use axios for http request?",
     type: "confirm",
-    default: false
+    default: true
+  },
+  {
+    name: "addApiPlugin",
+    message: "是否使用基于axios的api封装插件",
+    type: "confirm",
+    default: true,
+    when({ addAxios }) {
+      return addAxios;
+    }
   }
 ];
